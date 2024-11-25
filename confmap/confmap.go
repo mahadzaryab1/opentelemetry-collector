@@ -404,9 +404,6 @@ func mapKeyStringToMapKeyTextUnmarshalerHookFunc() mapstructure.DecodeHookFuncTy
 // by implementing the Unmarshaler interface.
 func unmarshalerEmbeddedStructsHookFunc() mapstructure.DecodeHookFuncValue {
 	return func(from reflect.Value, to reflect.Value) (any, error) {
-		if !from.IsValid() {
-			return from, nil
-		}
 		if to.Type().Kind() != reflect.Struct {
 			return from.Interface(), nil
 		}
@@ -447,10 +444,6 @@ func unmarshalerEmbeddedStructsHookFunc() mapstructure.DecodeHookFuncValue {
 // true and the struct matches the top level object being unmarshaled.
 func unmarshalerHookFunc(result any, skipTopLevelUnmarshaler bool) mapstructure.DecodeHookFuncValue {
 	return func(from reflect.Value, to reflect.Value) (any, error) {
-		if !from.IsValid() {
-			return from, nil
-		}
-
 		if !to.CanAddr() {
 			return from.Interface(), nil
 		}
@@ -491,10 +484,6 @@ func unmarshalerHookFunc(result any, skipTopLevelUnmarshaler bool) mapstructure.
 func marshalerHookFunc(orig any) mapstructure.DecodeHookFuncValue {
 	origType := reflect.TypeOf(orig)
 	return func(from reflect.Value, _ reflect.Value) (any, error) {
-		if !from.IsValid() {
-			return from, nil
-		}
-
 		if from.Kind() != reflect.Struct {
 			return from.Interface(), nil
 		}
@@ -555,10 +544,6 @@ type Marshaler interface {
 //   - for example, input is {}, then output is Config{ Keys: ["a", "b"]}
 func zeroSliceHookFunc() mapstructure.DecodeHookFuncValue {
 	return func(from reflect.Value, to reflect.Value) (interface{}, error) {
-		if !from.IsValid() {
-			return from, nil
-		}
-
 		if to.CanSet() && to.Kind() == reflect.Slice && from.Kind() == reflect.Slice {
 			if !from.IsNil() {
 				to.Set(reflect.MakeSlice(to.Type(), from.Len(), from.Cap()))
